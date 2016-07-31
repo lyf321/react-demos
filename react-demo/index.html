@@ -2,46 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>test</title>
+    <title>react-demo</title>
     <script src="../build/react.js"></script>
     <script src="../build/react-dom.js"></script>
     <script src="../build/browser.min.js"></script>
     <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-
+    <link rel="stylesheet" href="demo.css">
 </head>
-<style>
-    .input {
-        width: 300px;
-    }
-
-    .container {
-        width: 600px;
-        margin: 0 auto;
-    }
-
-    .frr {
-        right: 10px;
-    }
-
-    .fl {
-        float: left;
-        height: auto;
-    }
-
-    .fr {
-        float: right;
-    }
-
-    .clearfix:after {
-        content: "";
-        display: table;
-        height: 0;
-        clear: both;
-    }
-
-</style>
 <body>
 <div class="container">
     <div id="example"></div>
@@ -209,32 +178,32 @@
             this.setState({todos: this.state.todos});
         },
 
+        chooseTask:function (index) {
+
+        },
+
         clickedChecked: function () {
-            let length = this.state.todos.length;
-            let todos = this.state.todos;
-            let todosClicked = this.state.todos.filter(todo => todo.isDone);
             let todoUnclicked = this.state.todos.filter(todo => !todo.isDone);
             this.setState({
                 todos: todoUnclicked,
-                isAllChecked: false
+                isAllChecked: false,
             });
         },
 
         unclickChecked: function () {
-            let length = this.state.todos.length;
-            let todos = this.state.todos;
+
             let todosClicked = this.state.todos.filter(todo => todo.isDone);
-            let todoUnclicked = this.state.todos.filter(todo => !todo.isDone);
             this.setState({
                 todos: todosClicked,
-                isAllChecked: false
+                isAllChecked: false,
             });
         },
+
         displayAll: function () {
             let todos = this.state.todos;
             this.setState({
                 todos: todos,
-                isAllChecked: false
+                isAllChecked: false,
             })
         },
 
@@ -256,8 +225,7 @@
                                     unclickChecked={this.unclickChecked.bind(this)}
                                     displayAll={this.displayAll.bind(this)}/>
                     </div>
-            )
-        }
+            )}
     });
 
     ReactDOM.render(

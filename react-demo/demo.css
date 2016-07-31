@@ -1,0 +1,28 @@
+.input {
+    width: 300px;
+}
+
+.container {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.frr {
+    right: 10px;
+}
+
+.fl {
+    float: left;
+    height: auto;
+}
+
+.fr {
+    float: right;
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    height: 0;
+    clear: both;
+}
