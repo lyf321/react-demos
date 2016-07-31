@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+</head>
+<style>
+    .input {
+        width: 300px;
+    }
+
+    .container {
+        width: 600px;
+        margin: 0 auto;
+    }
+
+    .frr {
+        right: 10px;
+    }
+
+    .fl {
+        float: left;
+        height: auto;
+    }
+
+    .fr {
+        float: right;
+    }
+
+    .clearfix:after {
+        content: "";
+        display: table;
+        height: 0;
+        clear: both;
+    }
+
+</style>
+<body>
+<div class="container">
+    <div id="example"></div>
+</div>
+<script type="text/babel">
+
+    var TodoHeader = React.createClass({
+        handlerKeyUp: function (event) {
+            if (event.keyCode === 13) {
+
+                if (event.target.value === "") {
+                    return false;
+                }
+
+                let newTodoItem = {
+                    text: event.target.value,
+                    isDone: false
+                };
+
+                event.target.value = "";
+                this.props.addTodo(newTodoItem);
+            }
+        },
+
+        render: function () {
+            return (
+                    <div className="header">
+                        <input onKeyDown={this.handlerKeyUp.bind(this)} type="text" className="input"
+                               placeholder="what we need to be done?"/>
+                    </div>
+            )
+        }
+    })
+
+
+    var TodoMain = React.createClass({
+        render: function () {
+            return (
+                    <div className="main">
+                        {this.props.todos.map((todo, index) => {
+                            return <TodoItem key={index} idDone={todo.isDone}
+                                             text={todo.text} isDone={todo.isDone} index={index}
+                                             changeTodoState={this.props.changeTodoState}
+                                             deleteTodo={this.props.deleteTodo}/>
+                        })}
+                    </div>
+            )
+        }
+    })
+
+
+    var TodoItem = React.createClass({
+        handlerChange: function () {
+            let isDone = !this.props.isDone;
+            this.props.changeTodoState(this.props.index, isDone);
+        },
+
+        handlerMouseOver: function () {
+            React.findDOMNode(this.refs.deleteBtn).style.display = "inline";
+        },
+
+        handlerMouseOut: function () {
+            React.findDOMNode(this.refs.deleteBtn).style.display = "none";
+        },
+
+        handlerDelete: function () {
+            this.props.deleteTodo(this.props.index);
+        },
+
+        render: function () {
+            let doneStyle = this.props.isDone ? {textDecoration: 'line-through'} : {textDecoration: 'none'};
+
+            return (
+                    <div onMouseOver={this.handlerMouseOver.bind(this)}
+                         onMouseOut={this.handlerMouseOut.bind(this)}>
+                        <input type="checkbox" checked={this.props.isDone} onChange={this.handlerChange.bind(this)}/>
+                        <span style={doneStyle}>{this.props.text}</span>
+                        <button refs="deleteBtn" onClick={this.handlerDelete.bind(this)} className="frr"> x</button>
+                    </div>
+            )
+        }
+    })
+
+
+    var TodoFooter = React.createClass({
+
+        handlerAllState: function (event) {
+            this.props.changeTodoState(null, event.target.checked, true);
+        },
+
+        handlerClick: function () {
+            this.props.clearDone();
+        },
+
+        handlerClickChecked: function () {
+            this.props.clickedChecked();
+        },
+
+        handlerUnClickedChecked: function () {
+            this.props.unclickChecked();
+        },
+        handelerAll: function () {
+            this.props.displayAll();
+        },
+        render: function () {
+            return (
+                    <div className="footer">
+                        <input checked={this.props.isAllChecked} onChange={this.handlerAllState.bind(this)}
+                               type="checkbox" className="fl"/>
+                        <span className="fl">{this.props.notToDoCount} item left</span>
+                        <button onClick={this.handlerClick.bind(this)} className="fr">Clear completed</button>
+                        <button onClick={this.handlerUnClickedChecked.bind(this)} className="fr">Completed</button>
+                        <button onClick={this.handlerClickChecked.bind(this)} className="fr">Active</button>
+                        <button onClick={this.handelerAll.bind(this)} className="fr">All</button>
+                    </div>
+            )
+        }
+    })
+
+
+    var TodoApp = React.createClass({
+
+        getInitialState: function () {
+            return {todos: [], isAllChecked: false}
+        },
+
+        allChecked: function () {
+            let isAllChecked = false;
+            if (this.state.todos.every((todo)=> todo.isDone)) {
+                isAllChecked = true;
+            }
+            this.setState({todos: this.state.todos, isAllChecked});
+        },
+
+        addTodo: function (todoItem) {
+            this.state.todos.push(todoItem);
+            this.allChecked();
+        },
+
+        changeTodoState: function (index, isDone, isChangeAll = false) {
+            if (isChangeAll) {
+                this.setState({
+                    todos: this.state.todos.map((todo) => {
+                        todo.isDone = isDone;
+                        return todo;
+                    }),
+                    isAllChecked: isDone
+                })
+            } else {
+                this.state.todos[index].isDone = isDone;
+                this.allChecked();
+            }
+        },
+
+        clearDone: function () {
+            let todos = this.state.todos.filter(todo => !todo.isDone);
+            this.setState({
+                todos: todos,
+                isAllChecked: false
+            });
+        },
+
+        deleteTodo: function (index) {
+            this.state.todos.splice(index, 1);
+            this.setState({todos: this.state.todos});
+        },
+
+        clickedChecked: function () {
+            let length = this.state.todos.length;
+            let todos = this.state.todos;
+            let todosClicked = this.state.todos.filter(todo => todo.isDone);
+            let todoUnclicked = this.state.todos.filter(todo => !todo.isDone);
+            this.setState({
+                todos: todoUnclicked,
+                isAllChecked: false
+            });
+        },
+
+        unclickChecked: function () {
+            let length = this.state.todos.length;
+            let todos = this.state.todos;
+            let todosClicked = this.state.todos.filter(todo => todo.isDone);
+            let todoUnclicked = this.state.todos.filter(todo => !todo.isDone);
+            this.setState({
+                todos: todosClicked,
+                isAllChecked: false
+            });
+        },
+        displayAll: function () {
+            let todos = this.state.todos;
+            this.setState({
+                todos: todos,
+                isAllChecked: false
+            })
+        },
+
+        render: function () {
+            var props = {
+                notToDoCount: parseInt(this.state.todos.length) - parseInt((this.state.todos &&
+                this.state.todos.filter((todo)=>todo.isDone)).length)
+            };
+            return (
+                    <div className="panel">
+                        <TodoHeader addTodo={this.addTodo.bind(this)}/>
+                        <TodoMain deleteTodo={this.deleteTodo.bind(this)} todos={this.state.todos}
+                                  changeTodoState={this.changeTodoState.bind(this)}/>
+                        <TodoFooter isAllChecked={this.state.isAllChecked}
+                                    clearDone={this.clearDone.bind(this)}
+                                    notToDoCount={props.notToDoCount}
+                                    changeTodoState={this.changeTodoState.bind(this)}
+                                    clickedChecked={this.clickedChecked.bind(this)}
+                                    unclickChecked={this.unclickChecked.bind(this)}
+                                    displayAll={this.displayAll.bind(this)}/>
+                    </div>
+            )
+        }
+    });
+
+    ReactDOM.render(
+            <TodoApp />
+            , document.getElementById("example"));
+
+</script>
+
+</body>
+</html>
