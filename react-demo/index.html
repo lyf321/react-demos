@@ -16,7 +16,6 @@
     <div id="example"></div>
 </div>
 <script type="text/babel">
-
     var TodoHeader = React.createClass({
         handlerKeyUp: function (event) {
             if (event.keyCode === 13) {
@@ -45,7 +44,6 @@
         }
     })
 
-
     var TodoMain = React.createClass({
         render: function () {
             return (
@@ -60,7 +58,6 @@
             )
         }
     })
-
 
     var TodoItem = React.createClass({
         handlerChange: function () {
@@ -88,12 +85,11 @@
                          onMouseOut={this.handlerMouseOut.bind(this)}>
                         <input type="checkbox" checked={this.props.isDone} onChange={this.handlerChange.bind(this)}/>
                         <span style={doneStyle}>{this.props.text}</span>
-                        <button refs="deleteBtn" onClick={this.handlerDelete.bind(this)} className="frr"> x</button>
+                        <button refs="deleteBtn" onClick={this.handlerDelete.bind(this)} className="fr"> x</button>
                     </div>
             )
         }
     })
-
 
     var TodoFooter = React.createClass({
 
@@ -129,7 +125,6 @@
             )
         }
     })
-
 
     var TodoApp = React.createClass({
 
@@ -178,7 +173,7 @@
             this.setState({todos: this.state.todos});
         },
 
-        chooseTask:function (index) {
+        chooseTask: function (index) {
 
         },
 
@@ -225,14 +220,10 @@
                                     unclickChecked={this.unclickChecked.bind(this)}
                                     displayAll={this.displayAll.bind(this)}/>
                     </div>
-            )}
+            )
+        }
     });
-
-    ReactDOM.render(
-            <TodoApp />
-            , document.getElementById("example"));
-
+    ReactDOM.render(<TodoApp />, document.getElementById("example"));
 </script>
-
 </body>
 </html>
